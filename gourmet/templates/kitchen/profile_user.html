@@ -1,0 +1,265 @@
+{% extends 'kitchen/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static "kitchen/profile.css" %}">
+<div class="content-profile-page">
+ <div class="profile-user-page card1">
+  <div class="img-user-profile">
+		{% if user_cover %}
+    <img class="profile-bgHome" src="{{MEDIA_URL}}{{user_cover}}"  data-toggle="modal" data-target="#coverMod"/>
+		{% else %}
+		<img class="profile-bgHome" data-toggle="modal" data-target="#coverMod" src="{% static "kitchen/default_cover.jpg" %}"/>
+		{% endif %}
+		{% if user_dp %}
+    <img class="avatar" src="{{MEDIA_URL}}{{user_dp}}" data-toggle="modal" data-target="#dpModal">
+		{% else %}
+		<img class="avatar" src="{% static "kitchen/default_dp.png" %}" data-toggle="modal" data-target="#dpModal">
+		{% endif %}
+  </div>
+
+  {% if is_self %}
+  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Edit Profile</button>
+{% endif %}
+  <div class="user-profile-data">
+    <h1>{{ user_name }}</h1>
+    <p>User</p>
+  </div>
+  <div class="description-profile">Age:{{user_age}}</div><br>
+	{% if user_about %}
+  <div class="description-profile">About Me: {{user_about}}</div>
+		{% endif %}
+  <ul class="data-user">
+    <li><a><strong>{{ recNo }}</strong><span>Saved Recipes</span></a></a></li>
+  </ul>
+</div>
+</div>
+
+<button type="button" class="btn" id="searchButton" data-toggle="modal" data-target="#mod2" >Search Recipe</button>
+
+<div class="row">
+  {% for rec_name, rec_desc, rec_hr, rec_min, rec_url, rec_img, rec_cal in recs %}
+  <div class="col-xs-12 col-md-4 col-sm-6">
+  <div class="flip-card"  onclick="location.href='{{rec_url}}'">
+  <div class="flip-card-inner">
+   <div class="flip-card-front">
+     <img src="{{MEDIA_URL}}{{rec_img}}" style="width:330px;height:280px;">
+   </div>
+   <div class="flip-card-back container">
+     <h1 class="rectitle">{{ rec_name }}</h1><br><br>
+     <p class="recdes">{{ rec_desc }}</p>
+     <ul class="media">
+   <li><span class="icon icon-clock"></span><span>{{rec_hr}}hr {{rec_min}}min</span></li>
+   <li><span class="icon icon-level"></span><span> Medium</span></li>
+   <li><span class="icon icon-calories"></span><span>{{ rec_cal }}</span></li>
+   </ul>
+   </div>
+  </div>
+  </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+{% if is_self %}
+<!-- Edit Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form method="post" action="/detailsChange">
+					{% csrf_token %}
+          <h2 class="details"><strong>Edit Details</strong></h2><br>
+            <div class="form-group">
+              <label for="userName">Name</label>
+              <input type="text" class="form-control" id="userName" placeholder="Your Name" required name="edit_name">
+            </div>
+            <div class="form-group">
+              <label for="userEmail">Email address</label>
+              <input type="email" class="form-control" id="userEmail" placeholder="{{user_email}}" required disabled>
+            </div>
+            <div class="form-group">
+              <label for="userAge">Age</label>
+              <input type="number" class="form-control" id="userAge" placeholder="Your Age" required name="edit_age">
+            </div>
+            <div class="form-group">
+              <label for="selfDesc">About Me:</label>
+              <textarea id="selfDesc" rows="6" cols="75" placeholder="Describe yourself" class="form-control" name="edit_about"></textarea>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- modal for dp -->
+  <div class="modal fade" id="dpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form method="post" action="/dpChange" enctype='multipart/form-data'>
+						{% csrf_token %}
+            <div class="form-group">
+              <label for="selDpUpload">Profile Image:</label>
+              <div>
+									{% if user_dp %}
+											<img src="{{MEDIA_URL}}{{user_dp}}" class="thumbnail" id="dpUpload">
+									{% else %}
+											<img src="{%static "kitchen/default_dp.png" %}" class="thumbnail" id="dpUpload">
+									{% endif %}
+              </div>
+              <input type="file" class="form-control" id="selDpUpload" accept="image/*" name="selDpUpload">
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-success">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- modal for cover -->
+  <div class="modal fade" id="coverMod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form method="post" action="/coverChange" enctype='multipart/form-data'>
+						{% csrf_token %}
+            <div class="form-group">
+              <label for="coverUpload">Cover Image:</label>
+              <div>
+								{% if user_cover %}
+								<img src="{{MEDIA_URL}}{{user_cover}}" class="thumbnail" id="imgUpload">
+								{% else %}
+								<img src="{%static "kitchen/default_cover.jpg" %}" class="thumbnail" id="imgUpload" >
+								{% endif %}
+              </div>
+              <input type="file" class="form-control" id="coverUpload" accept="image/*" name="coverUpload">
+            </div>
+            <button type="submit" class="btn btn-success">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal for search -->
+<div class="modal fade" id="mod2" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form class="form-horizontal"  method="post" action="/search">
+          {% csrf_token %}
+          <div class="form-group">
+  					<label class="col-sm-2 control-label">Ingredients:</label><br>
+  					<div class="col-sm-offset-2">
+  						<ul class="checkbox-grid">
+  							<!-- Here -->
+  						</ul>
+  					</div>
+  				</div>
+  				<input type="hidden" id="ingAll" value="" name="ingAll">
+  				<div class="form-group">
+  					<label for="other" class="col-sm-2 control-label">New Ingredient:</label>
+  					<div class="col-sm-10">
+  						<input type="text" class="form-control time-sd" id="other">
+  					</div>
+  				</div>
+          <button class="btn btn-submit" type="submit" id="searchSubmit">Search</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+
+<script type="text/javascript">
+  $("#userName").val("{{user_name}}");
+  $("#userAge").val({{user_age}});
+  $("#userEmail").val("{{user_email}}");
+	{% if user_about %}
+	  $("#selfDesc").val("{{user_about}}");
+	{% endif %}
+  $("#coverUpload").change(function(e) {
+    for (var i = 0; i < e.originalEvent.srcElement.files.length; i++) {
+      var file = e.originalEvent.srcElement.files[i];
+      var reader = new FileReader();
+      reader.onloadend = function() {
+        $("#imgUpload").attr("src",reader.result);
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+
+  $("#selDpUpload").change(function(e) {
+		console.log("DP something");
+    for (var i = 0; i < e.originalEvent.srcElement.files.length; i++) {
+      var file = e.originalEvent.srcElement.files[i];
+      var reader = new FileReader();
+      reader.onloadend = function() {
+        $("#dpUpload").attr("src",reader.result);
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+
+</script>
+
+<script type="text/javascript">
+$('.rolldown-list li').each(function () {
+var delay = ($(this).index() / 4) + 's';
+$(this).css({
+ webkitAnimationDelay: delay,
+ mozAnimationDelay: delay,
+ animationDelay: delay
+});
+});
+</script>
+
+
+<script type="text/javascript">
+var others="";
+  $('#other').keypress(function (e) {
+      var key = e.which;
+      if(key == 13)  // the enter key code
+      {
+        e.preventDefault();
+        var toadd = $('#other').val();
+        if(toadd==""){}
+        else{
+        var pt1 = '<li class="checkbox"><input type="checkbox" class="newOnes" checked id="'
+        var pt2='"/><label>'
+        var pt3 = '</label></li>'
+        $('.checkbox-grid').append(pt1+toadd.replace(/ /g,'^ghhd^')+pt2+toadd+pt3);
+        $('#other').val('');
+        var newId="#"+toadd.replace(/ /g,'^ghhd^');
+        $(newId).prop("checked",true);
+      }
+      }
+
+});
+
+$('#searchSubmit').click(function(e){
+var allNew = $('.newOnes');
+var finalIng = "";
+for(i=0;i<allNew.length;i++){
+  if(allNew[i].checked == true){
+    console.log(allNew[i].id);
+    finalIng+="/element/"+allNew[i].id;
+  }
+}
+console.log(finalIng);
+$('#ingAll').attr('value',finalIng);
+});
+</script>
+
+{% endblock %}

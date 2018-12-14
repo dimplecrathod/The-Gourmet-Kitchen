@@ -1,0 +1,84 @@
+{% extends 'kitchen/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+
+<link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet">
+<style media="screen">
+.page-header2 {
+  background: url("{% static "kitchen/common-back.jpg" %}");
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 150px;
+  font-family: 'Satisfy', cursive;
+}
+.ansh{
+  background-image: url("{% static "kitchen/ansh.JPG" %}");
+}
+.dimple{
+  background-image: url("{% static "kitchen/dimple.jpg" %}");
+}
+.harsh{
+   background-image: url("{% static "kitchen/harsh.jpeg" %}");
+}
+</style>
+<div class="page-header2" >
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+            <h1>Meet The Team.</h1>
+          </div><!-- .col -->
+      </div><!-- .row -->
+  </div><!-- .container -->
+</div>
+
+
+<center>
+<div class="row">
+
+  <div class="col-md-4">
+  <div class="cont">
+     <div class="card_Banner">
+        <div class="card_Avatar dimple"></div>
+     </div>
+  	<h3>Dimple Rathod</h3>
+  	<a href="mailto:dimplecrathod@gmail.com"><i class="far fa-envelope"></i> dimplecrathod@gmail.com</a>
+  	<a><i class="fas fa-mobile-alt"></i> +91 9619350071</a>
+  	   <a href="https://www.linkedin.com/in/dimple-rathod-146316139/" target="_blank"><i class="fab fa-linkedin"></i></a>
+  		<a href="https://www.facebook.com/dimple.rathod.9250" target="_blank"><i class="fab fa-facebook"></i></a>
+  </div>
+  </div>
+
+<div class="col-md-4">
+<div class="cont">
+   <div class="card_Banner">
+      <div class="card_Avatar harsh"></div>
+   </div>
+	<h3>Harsh Salvi</h3>
+	<a href="mailto:harshsalvi24@gmail.com"><i class="far fa-envelope"></i> harshsalvi24@gmail.com</a>
+	<a><i class="fas fa-mobile-alt"></i> +91 9004149047</a>
+	   <a href="https://www.linkedin.com/in/harsh-salvi/" target="_blank"><i class="fab fa-linkedin"></i></a>
+		<a href="https://github.com/harsh-bat" target="_blank"><i class="fab fa-github"></i></a>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="cont">
+   <div class="card_Banner">
+      <div class="card_Avatar ansh"></div>
+   </div>
+	<h3>Ansh Shah</h3>
+	<a href="mailto:ansh.shah18298@gmail.com"><i class="far fa-envelope"></i> ansh.shah18298@gmail.com</a>
+	<a><i class="fas fa-mobile-alt"></i> +91 9920573741</a>
+	   <a href="https://www.linkedin.com/in/ansh-shah-723b92157/" target="_blank"><i class="fab fa-linkedin"></i></a>
+		<a href="https://www.facebook.com/ansh.shah.018" target="_blank"><i class="fab fa-facebook"></i></a>
+</div>
+</div>
+
+
+</div>
+</div>
+</div>
+</center>
+<link rel="stylesheet" href="{% static "kitchen/team.css" %}">
+ {% endblock %}

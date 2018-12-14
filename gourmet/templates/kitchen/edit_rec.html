@@ -1,0 +1,165 @@
+{% extends 'kitchen/base.html' %}
+{% load static %}
+{% block content %}
+
+	<div class="row mainCard center-block">
+		<div class="col-sm-12">
+			{% if is_wrong %}
+			<h1>{{error_message}}</h1>
+			{% else %}
+			<h1>Edit Recipe</h1>
+			<form class="form-horizontal"  method="post" action="/acceptEditRec" enctype='multipart/form-data'>
+				{% csrf_token %}
+				<div class="form-group">
+					<label for="recName" class="col-sm-2 control-label">Name of Recipe:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="recName" placeholder="Name of Recipe" required name="recName">
+					</div>
+				</div>
+				<input type="hidden" name="recNo" value="{{rec_no}}" id="recNo">
+				<div class="form-group">
+					<label for="recCategory" class="col-sm-2 control-label">Category:</label>
+					<div class="col-sm-10">
+						<select class="form-control" name="recCategory" id="recCategory" required>
+							<option selected disabled>Select</option>
+							<option value="Indian">Indian</option>
+							<option value="Chinese">Chinese</option>
+							<option value="Italian">Italian</option>
+							<option value="Mexican">Mexican</option>
+							<option value="Thai">Thai</option>
+							<option value="Other">Other</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="recDesc" class="col-sm-2 control-label">Description:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="recDesc" placeholder="Short Description" required name="recDesc">
+					</div>
+
+				</div>
+				<div class="form-group">
+					<label for="recCal" class="col-sm-2 control-label">Calories:</label>
+					<div class="col-sm-10">
+						<input type="number" class="form-control time-sd" id="recCal" placeholder="Calories" required name="recCal">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="recDir" class="col-sm-2 control-label">Directions:</label>
+					<div class="col-sm-10">
+						<textarea class="form-control" id="recDir" rows="7" cols="30" placeholder="Directions" required name="recDir">{{rec_dir}}</textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Ingredients:</label>
+					<div class="col-sm-offset-2">
+						<ul class="checkbox-grid">
+							<!-- Here -->
+							{% for ing, modIng in ings %}
+							<li class="checkbox">
+								<input type="checkbox" class="newOnes" id="{{modIng}}" checked/>
+								<label>{{ing}}</label>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+				<input type="hidden" id="ingAll" value="" name="ingAll">
+				<div class="form-group">
+					<label for="other" class="col-sm-2 control-label">New Ingredient:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control time-sd" id="other">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="time" class="col-sm-2 control-label">Time Required:</label>
+					<div class="col-sm-10">
+						<input type="number" min="0" max="100" default="0" class="form-control time-sd" id="recHr" required name="recHr"><span class="time-sd time-txt">hrs</span>
+						<input type="number" min="0" max="59" class="form-control time-sd" id="recMin" required name="recMin"><span class="time-sd time-txt">mins</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="imgUpload" class="col-sm-2 control-label">Image:</label>
+					<div class="col-sm-10">
+						<div>
+							<img src="{{MEDIA_URL}}{{rec_img}}" class="thumbnail" id="currentImg">
+						</div>
+						<input type="file" class="form-control" id="imgUpload" accept="image/*" name="imgUpload">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" id="submitButton" class="btn btn-success">Save</button>
+					</div>
+				</div>
+			</form>
+
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		$("#imgUpload").change(function(e) {
+
+			for (var i = 0; i < e.originalEvent.srcElement.files.length; i++) {
+				var file = e.originalEvent.srcElement.files[i];
+				var reader = new FileReader();
+				reader.onloadend = function() {
+					$("#currentImg").attr("src",reader.result);
+				}
+				$("#currentImg").show();
+				reader.readAsDataURL(file);
+			}
+		});
+	</script>
+
+	<script type="text/javascript">
+	var others="";
+		$('#other').keypress(function (e) {
+				var key = e.which;
+				if(key == 13)  // the enter key code
+	  		{
+					e.preventDefault();
+					var toadd = $('#other').val();
+					if(toadd==""){}
+					else{
+					var pt1 = '<li class="checkbox"><input type="checkbox" class="newOnes" checked id="'
+					var pt2='"/><label>'
+					var pt3 = '</label></li>'
+					$('.checkbox-grid').append(pt1+toadd.replace(/ /g,'^ghhd^')+pt2+toadd+pt3);
+					$('#other').val('');
+					var newId="#"+toadd.replace(/ /g,'^ghhd^');
+					$(newId).prop("checked",true);
+				}
+	  		}
+
+});
+
+$('#submitButton').click(function(e){
+	var allNew = $('.newOnes');
+	var finalIng = "";
+	for(i=0;i<allNew.length;i++){
+		if(allNew[i].checked == true){
+			console.log(allNew[i].id);
+			finalIng+="/element/"+allNew[i].id;
+		}
+	}
+	console.log(finalIng);
+	$('#ingAll').attr('value',finalIng);
+});
+	</script>
+
+<script>
+$('#recName').val("{{rec_name}}");
+$('#recDesc').val("{{rec_desc}}");
+$('#recCal').val("{{rec_cal}}");
+$('#recHr').val({{rec_time_hr}});
+$('#recMin').val({{rec_time_min}});
+$('#recCategory').val("{{rec_category}}");
+	{% for modIng in ModIngs %}
+		$('#{{modIng}}').prop('checked',true);
+	{% endfor %}
+</script>
+
+{% endif %}
+<link rel="stylesheet" href="{% static "kitchen/new_rec.css" %}">
+{% endblock %}

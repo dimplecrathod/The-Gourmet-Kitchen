@@ -1,0 +1,73 @@
+{% extends 'kitchen/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static "kitchen/index.css" %}">
+<style type="text/css">
+  .jumbotron{
+    background-image: url('{% static "kitchen/back.png" %}');
+  }
+</style>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
+  <section class="jumbotron">
+    <div class="container">
+      <div class="row text-center">
+        <h2>The Gourmet Kitchen</h2>
+        <h3>Your one stop culinary destination to learn<br>how to whip up recipes like a chef!</h3>
+      </div>
+    </div>
+  </section>
+  <section class="container text-center">
+    <h2>Top Rated Recipes</h2><br>
+
+    <!-- recipe cards here -->
+    <div class="row">
+      {% for rec_name, rec_desc, rec_hr, rec_min, rec_url, rec_img, rec_cal in recs %}
+      <div class="col-xs-12 col-md-4 col-sm-6">
+      <div class="flip-card"  onclick="location.href='{{rec_url}}'">
+      <div class="flip-card-inner">
+       <div class="flip-card-front">
+         <img src="{{MEDIA_URL}}{{rec_img}}" style="width:330px;height:280px;">
+       </div>
+       <div class="flip-card-back container">
+         <h1 class="rectitle">{{ rec_name }}</h1><br><br>
+         <p class="recdes">{{ rec_desc }}</p>
+         <ul class="media">
+       <li><span class="icon icon-clock"></span><span>{{rec_hr}}hr {{rec_min}}min</span></li>
+       <li><span class="icon icon-level"></span><span> Medium</span></li>
+       <li><span class="icon icon-calories"></span><span>{{ rec_cal }}</span></li>
+       </ul>
+       </div>
+      </div>
+      </div>
+      </div>
+      {% endfor %}
+    </div>
+
+        <div class="row text-center">
+      <a class="btn btn-large btn-secondary" href="#" data-toggle="modal" data-target="#exampleModalCenterCatalogue">View Complete Catalogue</a>
+      </div>
+  </section>
+  <div class="modal fade" id="exampleModalCenterCatalogue" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  	   <div>
+  			<ul class="rolldown-list" id="myList">
+            <li><a href="category/Chinese">Chinese</a></li>
+    				<li><a href="category/Indian">Indian</a></li>
+    				<li><a href="category/Italian">Italian</a></li>
+    				<li><a href="category/Mexican">Mexican</a></li>
+            <li><a href="category/Thai">Thai</a></li>
+    				<li><a href="category/Other">Other</a></li>
+  			</ul>
+  		</div>
+      </div>
+
+  <script type="text/javascript">
+$('.rolldown-list li').each(function () {
+var delay = ($(this).index() / 4) + 's';
+$(this).css({
+  webkitAnimationDelay: delay,
+  mozAnimationDelay: delay,
+  animationDelay: delay
+});
+});
+</script>
+ {% endblock %}
